@@ -296,22 +296,30 @@ class Keyboard(Gtk.Window):
 	def __init__(self):
 
 		Gtk.Window.__init__(
-			self, title='Pick emoji',
+			self, title='Ej',
 			accept_focus=False,
 			skip_taskbar_hint=True)
 		self.set_keep_above(True)
 		self.set_icon_name(shared.icon)
 		self.set_type_hint(Gdk.WindowTypeHint.UTILITY)
-		self.set_border_width(6)
+		self.set_border_width(0)
 		if shared.settings['keyboard_use_compact']:
 			self.set_default_size(*shared.settings['keyboard_size_compact'])
+			self.set_size_request(423, 460) # (*shared.settings['keyboard_size_compact'])
 		else:
 			self.set_default_size(*shared.settings['keyboard_size_full'])
+		self.set_resizable(False)
+
+		search = Gtk.SearchBar()
+
+		# self.add(search)
+
 		self.connect('show', self.window_shown)
 		self.connect('delete-event', self.hide_window)
 		self.connect('configure-event', self.window_resized)
 
 		self.notebook = Gtk.Notebook()
+		self.notebook.set_tab_pos(Gtk.PositionType(3))
 		self.add(self.notebook)
 
 		self.emoji_views = []
@@ -331,7 +339,7 @@ class Keyboard(Gtk.Window):
 				shared.data_dir,
 				'category-icons',
 				shared.categories[category] + '.svg'),
-				16, 16, True)
+				23, 23, True) # 16, 16, True)
 			image = Gtk.Image.new_from_pixbuf(pixbuf)
 			text = Gtk.Label(shared.categories[category].title())
 			label.pack_start(image, True, True, 0)
@@ -345,26 +353,22 @@ class Keyboard(Gtk.Window):
 			self.notebook.append_page(scrolled_window, label)
 
 	def window_shown(self, window):
-
 		self.move(*shared.settings['keyboard_pos'])
 		shared.keyboard_visible = True
 		return False
 
 	def hide_window(self, window, event):
-
 		self.hide()
 		shared.keyboard_visible = False
 		return True
 
 	def window_resized(self, window, event):
-
 		shared.settings['keyboard_pos'] = (event.x, event.y)
 		padding = self.emoji_views[1].get_item_padding() * 2
 		spacing = self.emoji_views[1].get_column_spacing()
 		column = shared.settings['emoji_size'] + padding + spacing
-		columns = event.width // column
+		columns = 6 # event.width // column
 		if shared.settings['keyboard_use_compact']:
-			shared.settings['keyboard_size_compact'] = (event.width, event.height)
 			shared.settings['keyboard_columns_compact'] = columns
 		else:
 			shared.settings['keyboard_size_full'] = (event.width, event.height)

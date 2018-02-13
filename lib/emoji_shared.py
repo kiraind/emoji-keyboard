@@ -44,13 +44,13 @@ try:
 			settings['type_on_select'] = True
 except (FileNotFoundError, ValueError):
 	settings = {'tone': None,
-				'emoji_size': 32,
+				'emoji_size': 26,
 				'keyboard_use_compact': False,
 				'keyboard_pos': (0, 0),
 				'keyboard_size_full': (820, 300),
 				'keyboard_columns_full': 16,
-				'keyboard_size_compact': (375, 250),
-				'keyboard_columns_compact': 7,
+				'keyboard_size_compact': (430, 450),
+				'keyboard_columns_compact': 6,
 				'search_pos': (0, 0),
 				'emoji_set': 'emojitwo',
 				'use_indicator': True,
@@ -96,5 +96,5 @@ def get_keycode():
 	except IndexError:
 		return key_list[1][0].keycode
 
-wayland = check_wayland()
+wayland = False # check_wayland()
 keycode = get_keycode()
